@@ -1,6 +1,6 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import DetailProduk from "./pages/DetailProduk";
 import Keranjang from "./pages/Keranjang";
@@ -8,11 +8,13 @@ import Keranjang from "./pages/Keranjang";
 function App() {
   return (
     <BrowserRouter>
-      <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/produk/:id" element={<DetailProduk />} />
-        <Route path="/keranjang" element={<Keranjang />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/produk/:id" element={<DetailProduk />} />
+          <Route path="/keranjang" element={<Keranjang />} />
+          <Route path="*" element={<h2>404 - Halaman Tidak Ditemukan</h2>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
