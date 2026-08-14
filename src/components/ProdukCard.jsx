@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
+import { useKeranjang } from "../context/KeranjangContext";
 import Button from "./Button";
 import Badge from "./Badge";
 
 function ProdukCard({ produk }) {
+    const { tambahKeKeranjang } = useKeranjang();
+
     return (
         <div className="border rounded-lg p-4 shadow hover:shadow-lg transition relative">
             {produk.stok === 0 && (
@@ -18,7 +21,7 @@ function ProdukCard({ produk }) {
 
             <p className="text-gray-600">Rp {produk.harga.toLocaleString("id-ID")}</p>
 
-            <Button onClick={() => console.log("Tambah ke keranjang:", produk.nama)}>
+            <Button onClick={() => tambahKeKeranjang(produk)}>
                 Tambah ke Keranjang
             </Button>
         </div>
