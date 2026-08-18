@@ -1,9 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
+import { useLocalStorage } from "../hooks/useLocalStorage"
 
 const KeranjangContext = createContext();
 
 export function KeranjangProvider({ children }) {
-    const [item, setItem] = useState([]);
+    const [item, setItem] = useLocalStorage("Keranjang", []);
 
     function tambahKeKeranjang(produk){
         setItem((prev) => [...prev, {...produk, jumlah: 1 }]);
