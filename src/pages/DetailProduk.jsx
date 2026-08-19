@@ -23,7 +23,7 @@ if (!produk) return <p className="p-6">Produk Tidak Ditemukan</p>;
 return(
     <div className="p-6">
         <Link to="/" className="text-blue-500" underline>&larr; Kembali ke Beranda</Link>
-        <img src={produk.gambar} className="w-full max-w-sm h-60 object-cover rounded mt-4" alt={produk.nama} />
+        <img src={produk.gambar} className="w-full max-w-sm h-60 object-contain rounded mt-4" alt={produk.nama} />
         <h2 className="text-2xl font-bold mt-4">{produk.title}</h2>
         <p className="text-gray-600 mt-2">Rp {produk.price}</p>
     </div>
