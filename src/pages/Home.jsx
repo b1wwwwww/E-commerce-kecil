@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import ProdukCard from "../components/ProdukCard";
 
+const KURS_USD_KE_IDR = 15000;
+
 function Home(){
   // tempat menyimpan data yg di dapat dari API
   const [produk, setProduk] = useState([]);
@@ -46,7 +48,7 @@ function Home(){
             produk={{ 
               id: p.id,
               nama: p.title, // API : title : nama
-              harga: p.price, // API : price : tapi satuannnya USD bkan RUpiajh
+              harga: Math.round(p.price * KURS_USD_KE_IDR),
               gambar: p.image, // API : image : gambar
               stok: 100, // cuma default stok
             }}
