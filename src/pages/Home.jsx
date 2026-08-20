@@ -19,6 +19,9 @@ function Home(){
   const [kataKunci, setKataKunci] = useState("");
   const [kategoriTerpilih, setKategoriTerpilih] = useState("semua");
 
+  // State Pagnition 
+  const [halamanSekarang, setHalamanSekarang] = useState(1);
+  const produkPerHalaman = 12; // 12 produk per halaman
 
   //useEffect dengan depedency array [] artinya (ambil data begitu halaman di buka)
   useEffect(() =>{
@@ -44,6 +47,11 @@ function Home(){
     .catch((err) => console.error("Gagal mengambil kategori : ", err));
   }, []);
 
+  // Reset ke halaman 1 setiap kali kata kunci atau kategori berubah
+  useEffect(() => {
+    setHalamanSekarang(1);
+  }, [kataKunci, kategoriTerpilih]);
+
   // Logika memfilter produk (kombinasi search dan category)
   const produkTersaring = produk.filter((item) => {
     const cocokKataKunci = item.title
@@ -57,7 +65,28 @@ function Home(){
     return cocokKataKunci && cocokKategori;
   })
 
-  // jika masih loading tampilkan ini
+  // Hitung Potongan Produk per Halaman
+  const indeksTerakhir = halamanSekarang * produkPerHalaman;
+  const indeksPertama = indeksTerakhir - produkPerHalaman;
+  const produkTampil = produkTersaring.slice(indeksPertama, indeksTerakhir);
+
+  // Hitung otomatis berapa total halaman yang dibutuhkan 
+  const totalHalaman = Math.ceil(produkTersaring.length / produkPerHalaman);
+
+  // Fungsi Navigasi Halaman 
+  const keHalamanSebelumnya = () => {
+    if(halamanSekarang > 1){
+      setHalamanSekarang((prev) => prev - 1);
+    }
+  };
+
+  const keHalamanSelanjutnya = () => {
+    if(halamanSekarang < totalHalaman){
+      setHalamanSekarang((prev) => prev + 1);
+    }
+  };
+
+  // Tampilan loading 
   if(loading) {
     return(
       <div className="text-center py-20 text-white font-semibold text-lg">
@@ -66,7 +95,7 @@ function Home(){
     )
   }
 
-  // jika ada error saat fetch
+  // jika ada error saat fetch, muncul tampilan ini
   if(error) {
     return(
       <div className="text-center py-20 text-red-500 font-semibold text-lg">
@@ -77,10 +106,6 @@ function Home(){
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Judul Halaman */}
-      <h1 className="text-3xl font-bold text-white text-center mb-8">
-        Katalog Vintage Touch
-      </h1>
 
       {/* --- FITUR BAR PENCARIAN & FILTER --- */}
       <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center">
@@ -100,7 +125,8 @@ function Home(){
           className="w-full md:w-1/4 p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-amber-500 capitalize"
         >
           <option value="semua">Semua Kategori</option>
-          {daftarKategori.map((kat) => (
+          {Array.isArray(daftarKategori) &&
+          daftarKategori.map((kat) => (
             <option key={kat} value={kat}>
               {kat}
             </option>
@@ -108,29 +134,71 @@ function Home(){
         </select>
       </div>
 
-    {/* --- RENDERING PRODUK HASIL FILTER --- */}
-    {produkTersaring.length === 0 ? (
-      <div className="text-center py-12 text-gray-400">
-        Produk yang kamu cari tidak ditemukan.
-      </div>
+    {/* --- RENDERING PRODUK (PAGINATED) --- */}
+      {produkTersaring.length === 0 ? (
+        <div className="text-center py-12 text-gray-400">
+          Produk yang kamu cari tidak ditemukan.
+        </div>
       ) : (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {produkTersaring.map((item) => (
-        <ProdukCard
-          key={item.id}
-          // Bungkus data produk menjadi 1 object 
-          produk={{
-            id: item.id,
-            nama: item.title, // API title : namaProduk
-            harga: item.price * KURS_USD_KE_IDR, 
-            gambar: item.image, // API gambar 
-            kategori: item.category,
-            stok: item.rating?.count || 10 // opsional
-          }}
-        />
-      ))}
-    </div>
-  )}
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {produkTampil.map((item) => (
+              <ProdukCard
+                key={item.id}
+                 // Bungkus data produk menjadi 1 object 
+                produk={{
+                  id: item.id,
+                  nama: item.title,
+                  harga: item.price * KURS_USD_KE_IDR,
+                  gambar: item.image,
+                  kategori: item.category,
+                  stok: item.rating?.count || 10,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* --- NAVIGASI PAGINATION --- */}
+          {totalHalaman > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-8">
+              {/* Tombol Sebelumnya */}
+              <button
+                onClick={keHalamanSebelumnya}
+                disabled={halamanSekarang === 1}
+                className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition"
+              >
+                Sebelumnya
+              </button>
+
+              {/* Tombol Nomor Halaman Dinamis (1, 2, 3...) */}
+              {Array.from({ length: totalHalaman }, (_, index) => index + 1).map(
+                (nomor) => (
+                  <button
+                    key={nomor}
+                    onClick={() => setHalamanSekarang(nomor)}
+                    className={`px-4 py-2 rounded-lg font-medium transition ${
+                      halamanSekarang === nomor
+                        ? "bg-amber-500 text-gray-900 font-bold"
+                        : "bg-gray-800 text-white hover:bg-gray-700"
+                    }`}
+                  >
+                    {nomor}
+                  </button>
+                )
+              )}
+
+              {/* Tombol Selanjutnya */}
+              <button
+                onClick={keHalamanSelanjutnya}
+                disabled={halamanSekarang === totalHalaman}
+                className="px-4 py-2 bg-amber-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-500 transition"
+              >
+                Selanjutnya
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
