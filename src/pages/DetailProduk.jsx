@@ -12,7 +12,7 @@ const [loading, setLoading] = useState(true);
 // Makanya dependency array-nya diisi [id], bukan [] kosong.
 useEffect(() => {
     fetch(`https://fakestoreapi.com/products/${id}`)
-    .then((res) => res.json)
+    .then((res) => res.json())
     .then((data) => {
         setProduk(data);
         setLoading(false);
@@ -30,7 +30,7 @@ return(
         <Link to="/" className="text-blue-500" underline>&larr; Kembali ke Beranda</Link>
         <img src={produk.gambar} className="w-full max-w-sm h-60 object-contain rounded mt-4" alt={produk.nama} />
         <h2 className="text-2xl font-bold mt-4">{produk.title}</h2>
-        // toLocaleString("id-ID") supaya formatnya jadi 150.000, bukan 150000 
+        {/* toLocaleString "id-ID" supaya formatnya jadi 150.000, bukan 150000 */}
         <p className="text-gray-600 mt-2">Rp {hargaRupiah.toLocaleString("id-ID")}</p>
     </div>
     );
