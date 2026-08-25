@@ -1,30 +1,69 @@
 // components/Header.jsx
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // BARU
+import { useAuth } from "../context/AuthContext";
 
 function Header() {
     const { user, logout } = useAuth();
 
     return (
-        <header className="p-4 text-center">
-        <h1 className="text-3xl font-bold">Vintage Touch</h1>
-        <nav className="flex gap-4 justify-center mt-2">
-            <Link to="/">Beranda</Link>
-            <Link to="/keranjang">Keranjang</Link>
+        <header className="fixed top-0 left-0 right-0 w-full z-50 bg-gray-900 border-b border-gray-800">
+            <div className="max-w-7xl mx-auto w-full px-6 py-4 flex justify-between items-center">
+                {/* Logo */}
+                <Link   Link to="/" className="text-2xl font-bold text-white tracking-wide">
+                    Vintage<span className="text-blue-500">Touch</span>
+                </Link>
 
-            {/*
-            Conditional rendering: kalau user sudah login, tampilkan email + tombol Logout.
-            Kalau belum login, tampilkan link ke halaman Login.
-            */}
-            {user ? (
-            <>
-                <span className="text-gray-400">Hi, {user.email}</span>
-                <button onClick={logout} className="text-red-400 underline">Logout</button>
-            </>
-            ) : (
-            <Link to="/login">Login</Link>
-            )}
-        </nav>
+            {/* Navigasi utama */}
+            <nav className="flex items-center font-medium">
+                <div className="flex gap-8">
+                    <Link
+                    to="/"
+                    className="text-gray-300 hover:text-blue-400 transition"
+                    >
+                    Beranda
+                    </Link>
+                    <Link
+                    to="/keranjang"
+                    className="text-gray-300 hover:text-blue-400 transition"
+                    >
+                    Keranjang
+                    </Link>
+                </div>
+
+                {/* pemisah vertikal */}
+                <div className="ml-6 h-6 w-px bg-gray-700" />
+
+                {/* tampilkan Login/Daftar jika belum login, atau email+Logout kalau sudah */}
+                <div className="ml-6 flex items-center gap-4">
+                    {user ? (
+                    <>
+                        <span className="text-gray-300">{user.email}</span>
+                        <button
+                        onClick={logout}
+                        className="text-gray-300 hover:text-red-400 underline"
+                        >
+                        Logout
+                        </button>
+                    </>
+                    ) : (
+                    <>
+                        <Link
+                        to="/login"
+                        className="text-gray-300 hover:text-blue-400 transition"
+                        >
+                        Login
+                        </Link>
+                        <Link
+                        to="/register"
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                        >
+                        Daftar
+                        </Link>
+                    </>
+                    )}
+                    </div>
+                </nav>
+            </div>
         </header>
     );
 }
