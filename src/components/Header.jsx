@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 function Header() {
     const { user, logout } = useAuth();
-
+    
     return (
         <header className="fixed top-0 left-0 right-0 w-full z-50 bg-gray-900 border-b border-gray-800">
             <div className="max-w-7xl mx-auto w-full px-6 py-4 flex justify-between items-center">
@@ -67,5 +67,4 @@ function Header() {
         </header>
     );
 }
-
 export default Header;
