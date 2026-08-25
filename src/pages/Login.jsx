@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
     // form = satu objek yang isinya SEMUA field input sekaligus (email & password).
@@ -7,6 +8,8 @@ function Login() {
 
     // menampilkan pesan error ke user jika validasi gagal
     const [error, setError] = useState("");
+    const { login } = useAuth(); // Ambil fungsi login dari context
+    const navigate = useNavigate();
 
     // Fungsi ini dipanggil tiap kali user mengetik di salah satu input
     function handleChange(e) {
@@ -40,6 +43,12 @@ function Login() {
         }
         // kalo lolos semua validasi, hapus pesan error nya
         setError("");
+
+         // Panggil fungsi login dari AuthContext, supaya status "user sudah login" tersimpan global
+        login(form.email);
+
+        // Setelah berhasil login, arahkan ke halaman Keranjang (atau Beranda, sesuai selera)
+        navigate("/keranjang");
 
         // proses login sebenarnya (kirim ke server nanti)
         console.log("Login Berhasil:", {
