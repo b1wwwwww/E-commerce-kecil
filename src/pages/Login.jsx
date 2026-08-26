@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
@@ -10,6 +10,9 @@ function Login() {
     const [error, setError] = useState("");
     const { login } = useAuth(); // Ambil fungsi login dari context
     const navigate = useNavigate();
+    const location = useLocation();
+    // from menyimpan halaman asal sebelum user dipaksa login.
+    const from = location.state?.from || "/keranjang";
 
     // Fungsi ini dipanggil tiap kali user mengetik di salah satu input
     function handleChange(e) {
@@ -47,8 +50,8 @@ function Login() {
          // Panggil fungsi login dari AuthContext, supaya status "user sudah login" tersimpan global
         login(form.email);
 
-        // Setelah berhasil login, arahkan ke halaman Keranjang (atau Beranda, sesuai selera)
-        navigate("/keranjang");
+        // Setelah berhasil login, arahkan kembali ke halaman yang tadi membutuhkan login.
+        navigate(from, { replace: true });
 
         // proses login sebenarnya (kirim ke server nanti)
         console.log("Login Berhasil:", {
@@ -93,7 +96,7 @@ function Login() {
 
             <p className="text-sm text-center">
             Belum punya akun?{" "}
-            <Link to="/register" className="text-blue-500 underline">
+            <Link to="/register" state={{ from }} className="text-blue-500 underline">
                 Daftar
             </Link>
             </p>

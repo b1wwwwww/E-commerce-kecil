@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect } from "vitest";
 import { MemoryRouter } from "react-router-dom"; // karena ProdukCard pakai <Link>
+import { AuthProvider } from "../context/AuthContext";
 import { KeranjangProvider } from "../context/KeranjangContext";
 import ProdukCard from "./ProdukCard";
 
@@ -26,9 +27,11 @@ describe("ProdukCard", () => {
     // KeranjangProvider (karena pakai useKeranjang()).
     render(
         <MemoryRouter>
+            <AuthProvider>
             <KeranjangProvider>
                 <ProdukCard produk={produk} />
             </KeranjangProvider>
+            </AuthProvider>
         </MemoryRouter>,
     );
 
@@ -48,9 +51,11 @@ describe("ProdukCard", () => {
 
     render(
         <MemoryRouter>
+            <AuthProvider>
             <KeranjangProvider>
             <ProdukCard produk={produkHabis} />
             </KeranjangProvider>
+            </AuthProvider>
         </MemoryRouter>,
     );
 

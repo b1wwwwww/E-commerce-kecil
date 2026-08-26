@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Register() {
     // form = objek yang menyimpan semua field sekaligus (email, password, konfirmasi)
@@ -13,6 +13,9 @@ function Register() {
     // useNavigate = hook buat pindah halaman lewat KODE (bukan lewat klik <Link>)
     // daftar sukses, otomatis diarahkan ke halaman Login
     const navigate = useNavigate();
+    const location = useLocation();
+    // Simpan tujuan balik supaya setelah daftar lalu login, user kembali ke halaman awal.
+    const from = location.state?.from || "/keranjang";
 
     // Fungsi ini dipanggil tiap saat user mengetik di salah satu input
     // e.target.name = nama input (email/password/konfirmasi)
@@ -54,7 +57,7 @@ function Register() {
         console.log("Registrasi berhasil:", { email, password });
 
         // navigate("/login") = pindah otomatis ke halaman Login setelah daftar sukses
-        navigate("/login");
+        navigate("/login", { state: { from } });
     }
 
     return (
@@ -106,7 +109,7 @@ function Register() {
 
             <p className="text-sm text-center">
             Sudah punya akun?{" "}
-            <Link to="/login" className="text-blue-500 underline">
+            <Link to="/login" state={{ from }} className="text-blue-500 underline">
                 Login
             </Link>
             </p>
