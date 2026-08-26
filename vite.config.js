@@ -1,9 +1,10 @@
 // vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   test: {
     // globals: true = supaya kita bisa pakai "describe", "it", "expect" langsung
     // tanpa perlu import manual di tiap file test
