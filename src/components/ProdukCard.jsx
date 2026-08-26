@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useKeranjang } from "../context/KeranjangContext";
 import Button from "./Button";
@@ -35,4 +36,6 @@ function ProdukCard({ produk }) {
     );
 }
 
-export default ProdukCard;
+// Dipakai supaya komponen tidak render ulang
+// kalau props-nya tidak berubah, menghemat kerja komputer/browser.
+export default memo(ProdukCard);
