@@ -1,6 +1,7 @@
 // context/KeranjangContext.test.jsx
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import "@testing-library/jest-dom";
+import { describe, it, expect, beforeEach } from "vitest";
 import { KeranjangProvider, useKeranjang } from "./KeranjangContext";
 
 // Komponen dummy khusus untuk keperluan test.
@@ -17,23 +18,28 @@ function KomponenTes() {
         <button onClick={() => tambahKeKeranjang(produkContoh)}>Tambah</button>
         </div>
     );
-    }
+}
 
-    describe("KeranjangContext", () => {
+describe("KeranjangContext", () => {
+    // Ini membersihkan localStorage supaya data dari test sebelumnya.
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
     it("menambahkan produk ke keranjang saat tambahKeKeranjang dipanggil", () => {
         render(
         <KeranjangProvider>
             <KomponenTes />
-        </KeranjangProvider>
+        </KeranjangProvider>,
         );
 
-        // Sebelum diklik, seharusnya masih 0 item
-        expect(screen.getByText("Jumlah item: 0")).toBeInTheDocument();
+    // Sebelum diklik, seharusnya masih 0 item
+    expect(screen.getByText("Jumlah item: 0")).toBeInTheDocument();
 
-        // Simulasikan klik tombol "Tambah"
-        fireEvent.click(screen.getByText("Tambah"));
+    // Simulasikan klik tombol "Tambah"
+    fireEvent.click(screen.getByText("Tambah"));
 
-        // Setelah diklik, seharusnya jadi 1 item
-        expect(screen.getByText("Jumlah item: 1")).toBeInTheDocument();
+    // Setelah diklik, seharusnya jadi 1 item
+    expect(screen.getByText("Jumlah item: 1")).toBeInTheDocument();
     });
 });
